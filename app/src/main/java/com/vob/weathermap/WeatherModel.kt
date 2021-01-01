@@ -1,3 +1,5 @@
+package com.vob.weathermap
+
 data class WeatherModel(
     val base: String,
     val clouds: Clouds,
