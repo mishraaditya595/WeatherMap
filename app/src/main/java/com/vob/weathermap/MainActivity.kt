@@ -3,14 +3,14 @@ package com.vob.weathermap
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
+import android.util.JsonReader
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.gson.Gson
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
 import com.vob.weathermap.databinding.ActivityMainBinding
@@ -19,7 +19,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.InputStreamReader
 import java.lang.Exception
+import java.lang.System.`in`
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         lateinit var latitude: String
         lateinit var longitude: String
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,20 +43,33 @@ class MainActivity : AppCompatActivity() {
 
         binding.text.text = "Lat: $latitude Longi: $longitude"
 
-
         var data: String = "xyz"
-        GlobalScope.launch {
-            val okHttpClient = OkHttpClient()
-            val request = Request.Builder()
-                    .url("${Constants.WEATHER_URL}lat=$latitude&lon=$longitude&appid=${Constants.API_ID}")
-                    .get()
-                    .build()
 
-            val response = okHttpClient.newCall(request).execute()
-            data = response.body().string()
+        GlobalScope.launch {
+
+            data = getWeatherData()
+
+            val gson = Gson()
+            val model = gson.fromJson<WeatherModel>(data, WeatherModel::class.java)
+            withContext(Dispatchers.Main) {
+                binding.text.text = data
+                Thread.sleep(2000L)
+                binding.text.text = model.main.temp.toBigDecimal().toPlainString()
+            }
         }
 
-        binding.text.text = data
+    }
+
+    private fun getWeatherData(): String {
+        val okHttpClient = OkHttpClient()
+        val request = Request.Builder()
+                .url("${Constants.WEATHER_URL}lat=$latitude&lon=$longitude&appid=${Constants.API_ID}")
+                .get()
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val data = response.body().string()
+        return data
     }
 
     @SuppressLint("MissingPermission")
@@ -80,8 +94,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun callApi() {
-
-    }
 
 }
