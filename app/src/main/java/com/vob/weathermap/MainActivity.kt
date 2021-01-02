@@ -3,25 +3,22 @@ package com.vob.weathermap
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.JsonReader
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
 import com.vob.weathermap.databinding.ActivityMainBinding
+import com.vob.weathermap.model.WeatherModel
 import com.vob.weathermap.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.System.`in`
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +37,11 @@ class MainActivity : AppCompatActivity() {
 
         getLocation()
 
+        binding.move.setOnClickListener {
+            Intent(this, RetrofitActivity::class.java).also {
+                startActivity(intent)
+            }
+        }
 
         binding.text.text = "Lat: $latitude Longi: $longitude"
 
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
+    fun getLocation() {
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
