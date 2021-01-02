@@ -11,7 +11,8 @@ interface WeatherApi {
     fun getWeatherData(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
-        @Query("APPID") appid: String
+        @Query("APPID") appid: String,
+        @Query("units") unit: String = "metric"
     ): Call<WeatherModel>
 
 }

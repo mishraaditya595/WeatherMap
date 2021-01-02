@@ -13,12 +13,12 @@ import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RetrofitActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRetrofitBinding
-    //lateinit var latitude: String
-    //ateinit var longitude: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRetrofitBinding.inflate(layoutInflater)
@@ -38,20 +38,18 @@ class RetrofitActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             delay(5000L)
             val call = api.getWeatherData("28.7041", "77.1025", Constants.API_ID).awaitResponse()
-//            if (call.isSuccessful) {
-//                val temp = call.body().toString()
-//                withContext(Dispatchers.Main){
-//                    binding.data.text = temp
-//                }
-//            }
-//            else
-//            {
-//                withContext(Dispatchers.Main){
-//                    binding.data.text = "Failed"
-//                }
-//            }
-            withContext(Dispatchers.Main){
-                binding.data.text = call.message()
+            if (call.isSuccessful) {
+                val temp = call.body()!!.main.temp
+                withContext(Dispatchers.Main){
+                    binding.data.text = temp.toBigDecimal().toPlainString()
+                    binding.date.text = getDate(call.body()!!.dt)
+                }
+            }
+            else
+            {
+                withContext(Dispatchers.Main){
+                    binding.data.text = "Failed"
+                }
             }
         }
     }
@@ -64,5 +62,14 @@ class RetrofitActivity : AppCompatActivity() {
         val longi = locationGPS.longitude
         val latitude = lat.toBigDecimal().toPlainString()
         val longitude = longi.toBigDecimal().toPlainString()
+    }
+
+    fun getDate(i: Int): String {
+
+        val date = Date(i.toLong())
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+        sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+        val timeFormat = sdf.format(date)
+        return timeFormat
     }
 }
