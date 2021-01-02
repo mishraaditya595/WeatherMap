@@ -37,7 +37,7 @@ class RetrofitActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
             delay(5000L)
-            val call = api.getWeatherData("28.7041", "77.1025", Constants.API_ID).main
+            val call = api.getWeatherData("28.7041", "77.1025", Constants.API_ID).awaitResponse()
 //            if (call.isSuccessful) {
 //                val temp = call.body().toString()
 //                withContext(Dispatchers.Main){
@@ -51,7 +51,7 @@ class RetrofitActivity : AppCompatActivity() {
 //                }
 //            }
             withContext(Dispatchers.Main){
-                binding.data.text = call.temp.toString()
+                binding.data.text = call.message()
             }
         }
     }
