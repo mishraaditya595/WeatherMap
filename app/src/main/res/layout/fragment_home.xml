@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.HomeFragment">
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitude"
+        android:layout_centerInParent="true"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:layout_margin="2dp"
+        />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Longitude"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/latitude"
+        style="@style/TextAppearance.AppCompat.Headline"
+        />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TIme"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/longitude"
+        style="@style/TextAppearance.AppCompat.Headline"
+        />
+
+</RelativeLayout>

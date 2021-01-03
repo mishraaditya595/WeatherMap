@@ -15,13 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherMap">
         <activity android:name=".RetrofitActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
 
         <service
@@ -29,8 +22,12 @@
             android:foregroundServiceType="location"
             tools:ignore="Instantiatable" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

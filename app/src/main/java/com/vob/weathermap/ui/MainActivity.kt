@@ -1,24 +1,21 @@
-package com.vob.weathermap
+package com.vob.weathermap.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.gson.Gson
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
+import com.vob.weathermap.R
 import com.vob.weathermap.databinding.ActivityMainBinding
-import com.vob.weathermap.model.WeatherModel
 import com.vob.weathermap.util.Constants
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,30 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         checkForLocationPermission()
 
-        getLocation()
+        //getLocation()
 
-        binding.move.setOnClickListener {
-            Intent(this, RetrofitActivity::class.java).also {
-                startActivity(intent)
-            }
-        }
-
-        binding.text.text = "Lat: $latitude Longi: $longitude"
-
-        var data: String = "xyz"
-
-        GlobalScope.launch {
-
-            data = getWeatherData()
-
-            val gson = Gson()
-            val model = gson.fromJson<WeatherModel>(data, WeatherModel::class.java)
-            withContext(Dispatchers.Main) {
-                binding.text.text = data
-                Thread.sleep(2000L)
-                binding.text.text = model.main.temp.toBigDecimal().toPlainString()
-            }
-        }
+        val navController = Navigation.findNavController(this, R.id.host_fragment)
+        //NavigationUI.setupActionBarWithNavController(this,navController)
 
     }
 
