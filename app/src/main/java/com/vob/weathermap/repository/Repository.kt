@@ -6,6 +6,6 @@ import retrofit2.Call
 
 class Repository {
     suspend fun getWeatherData(lat: String, lon: String, appid: String): WeatherModel {
-        return RetrofitInstance.api.getWeatherData(lat, lon, appid)
+        return RetrofitInstance().api.getWeatherData(lat, lon, appid)
     }
 }
