@@ -11,12 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.vob.weathermap.R
 import com.vob.weathermap.databinding.FragmentHomeBinding
+import com.vob.weathermap.repository.Repository
+import com.vob.weathermap.util.Constants.Companion.API_ID
 import com.vob.weathermap.viewmodel.HomeViewModel
 import com.vob.weathermap.viewmodel.HomeViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
@@ -26,6 +25,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
+    private lateinit var latitude: String
+    private lateinit var longitude: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -36,30 +37,62 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-        val activity = requireActivity()
-        val viewModelFactory = HomeViewModelFactory(requireContext())
+        val repository = Repository()
+        val viewModelFactory = HomeViewModelFactory(requireContext(), repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
 
-        //viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        latitude = ""
+        longitude = ""
+
+//        viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
+//            binding.cordinates.text = "Lat:${it.latitude}  Lon:${it.longitude}"
+//            latitude = it.latitude.toString()
+//            longitude = it.longitude.toString()
+//        })
+//
+//        viewModel.getWeatherData("28.70", "77.1", API_ID)
+//        viewModel.response.observe(viewLifecycleOwner, Observer {
+//            binding.temperature.text = "Temp: ${it.main.temp}"
+//        })
+
         GlobalScope.launch(Dispatchers.Main) {
-            delay(3000L)
-            startLocationUpdates()
+
+            viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
+                latitude =  it.latitude.toString()
+                longitude = it.longitude.toString()
+            })
+
+            delay(5000L)
+
+            viewModel.getWeatherData(latitude, longitude, API_ID)
+            viewModel.response.observe(viewLifecycleOwner, Observer {
+                binding.cordinates.text = "Lat: $latitude Lon: $longitude"
+                binding.humidity.text = "Humidity: ${it.main.humidity}"
+                binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                binding.pressure.text = "Pressure: ${it.main.pressure}"
+                binding.temperature.text = "Temperature: ${it.main.temp}"
+                binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                binding.weatherDesc.text = it.weather[0].description
+                binding.visibility.text = "Visibility: ${it.visibility}"
+                binding.wind.text = "Wind: ${it.wind.speed}"
+            })
         }
+
     }
 
-    suspend fun startLocationUpdates() {
-        viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
-            binding.latitude.text = it.latitude
-            binding.longitude.text = it.longitude
-
-            val dateFormat = SimpleDateFormat("hh:mm a")
-            dateFormat.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
-            val timeCal = Calendar.getInstance().time
-            val time = dateFormat.format(timeCal)
-
-            binding.time.text = getTime(it.time!!)
-        })
-    }
+//    suspend fun startLocationUpdates() {
+//        viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
+//            binding.latitude.text = it.latitude
+//            binding.longitude.text = it.longitude
+//
+//            val dateFormat = SimpleDateFormat("hh:mm a")
+//            dateFormat.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+//            val timeCal = Calendar.getInstance().time
+//            val time = dateFormat.format(timeCal)
+//
+//            binding.time.text = getTime(it.time!!)
+//        })
+//    }
 
     private fun getTime(timeStamp: String): String? {
         val calendar = Calendar.getInstance()

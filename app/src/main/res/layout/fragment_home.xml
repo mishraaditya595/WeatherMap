@@ -6,33 +6,110 @@
     tools:context=".ui.fragments.HomeFragment">
 
     <TextView
-        android:id="@+id/latitude"
+        android:id="@+id/cordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude"
-        android:layout_centerInParent="true"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:layout_margin="2dp"
+        android:text="Lat:    Lon:"
+        android:layout_margin="15dp"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textAlignment="center"
+        android:textStyle="bold"
         />
 
     <TextView
-        android:id="@+id/longitude"
+        android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Longitude"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/latitude"
+        android:layout_below="@+id/cordinates"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Temperature: "
         style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
         />
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/max_min_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TIme"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/longitude"
+        android:layout_below="@+id/temperature"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Max:    Min: "
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/sun_rise_set"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/max_min_temp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Sunrise:     Sunset: "
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/weather_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sun_rise_set"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Description "
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/wind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/weather_desc"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Wind: "
         style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wind"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Humidity: "
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/humidity"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Pressure: "
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/visibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pressure"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:text="Visibility: "
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
         />
 
 </RelativeLayout>
