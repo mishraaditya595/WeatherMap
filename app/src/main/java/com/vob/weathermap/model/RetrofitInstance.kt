@@ -28,7 +28,7 @@ class RetrofitInstance {
                 val response = it.proceed(it.request())
 
                 val cacheControl = CacheControl.Builder()
-                        .maxAge(15, TimeUnit.MINUTES)
+                        .maxAge(60, TimeUnit.SECONDS)
                         .build()
 
                 return@Interceptor response.newBuilder()
@@ -60,7 +60,8 @@ class RetrofitInstance {
         }
 
         private fun cache(): Cache {
-            return Cache(File(WeatherApplication.getInstance()!!.cacheDir, "offlineCache"), cacheSize)
+            //return Cache(File(WeatherApplication.getInstance()!!.cacheDir, "offlineCache"), cacheSize)
+            return Cache(WeatherApplication.getInstance()!!.cacheDir, cacheSize)
         }
 
         private val cacheSize = (5 * 1024 * 1024).toLong()
@@ -69,11 +70,25 @@ class RetrofitInstance {
 
     private val retrofit by lazy {
 
+//        val okHttpClient = OkHttpClient.Builder()
+//                .cache(cache())
+//                .addInterceptor(httpLoggingInterceptor()) //used when network is on & off
+//                .addNetworkInterceptor(networkInterceptor()) //used when network is on
+//                .addInterceptor(offlineInterceptor())
+//                .build()
+
         val okHttpClient = OkHttpClient.Builder()
                 .cache(cache())
-                .addInterceptor(httpLoggingInterceptor()) //used when network is on & off
-                .addNetworkInterceptor(networkInterceptor()) //used when network is on
-                .addInterceptor(offlineInterceptor())
+                .addInterceptor { chain->
+                    val request = chain.request()
+
+                    if (WeatherApplication.hasNetwork())
+                        request.newBuilder().header(HEADER_CACHE_CONTROL, "public, max-age=" +60).build()
+                    else
+                        request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build()
+
+                    chain.proceed(request)
+                }
                 .build()
 
         Retrofit.Builder()

@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.vob.weathermap.R
+import com.vob.weathermap.WeatherApplication
 import com.vob.weathermap.databinding.FragmentHomeBinding
+import com.vob.weathermap.model.WeatherModel
 import com.vob.weathermap.repository.Repository
 import com.vob.weathermap.util.Constants.Companion.API_ID
 import com.vob.weathermap.viewmodel.HomeViewModel
@@ -64,18 +67,33 @@ class HomeFragment : Fragment() {
 
             delay(5000L)
 
-            viewModel.getWeatherData(latitude, longitude, API_ID)
-            viewModel.response.observe(viewLifecycleOwner, Observer {
-                binding.cordinates.text = "Lat: $latitude Lon: $longitude"
-                binding.humidity.text = "Humidity: ${it.main.humidity}"
-                binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                binding.pressure.text = "Pressure: ${it.main.pressure}"
-                binding.temperature.text = "Temperature: ${it.main.temp}"
-                binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                binding.weatherDesc.text = it.weather[0].description
-                binding.visibility.text = "Visibility: ${it.visibility}"
-                binding.wind.text = "Wind: ${it.wind.speed}"
-            })
+
+
+            if (WeatherApplication.hasNetwork())
+            {
+                viewModel.getWeatherData("20.3", "20.5", API_ID)
+                viewModel.response.observe(viewLifecycleOwner, Observer {
+
+                    binding.cordinates.text = "Lat: $latitude Lon: $longitude"
+                    binding.humidity.text = "Humidity: ${it.main.humidity}"
+                    binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                    binding.pressure.text = "Pressure: ${it.main.pressure}"
+                    binding.temperature.text = "Temperature: ${it.main.temp}"
+                    binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                    binding.weatherDesc.text = it.weather[0].description
+                    binding.visibility.text = "Visibility: ${it.visibility}"
+                    binding.wind.text = "Wind: ${it.wind.speed}"
+                })
+            }
+
+            else
+            {
+                withContext(Dispatchers.Main)
+                {
+                    Toast.makeText(context,"", Toast.LENGTH_LONG).show()
+                }
+            }
+
         }
 
     }

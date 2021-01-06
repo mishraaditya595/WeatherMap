@@ -13,7 +13,7 @@ class WeatherApplication: Application() {
         
         public fun getInstance(): WeatherApplication? = instance
         
-        public fun hasNetwork() = instance?.isNetworkConnected()
+        public fun hasNetwork() = instance!!.isNetworkConnected()
     }
 
     override fun onCreate() {
