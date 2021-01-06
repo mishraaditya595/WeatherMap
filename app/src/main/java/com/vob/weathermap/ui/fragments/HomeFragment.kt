@@ -1,29 +1,26 @@
 package com.vob.weathermap.ui.fragments
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.vob.weathermap.R
 import com.vob.weathermap.WeatherApplication
 import com.vob.weathermap.databinding.FragmentHomeBinding
-import com.vob.weathermap.model.WeatherModel
+import com.vob.weathermap.db.WeatherDbModel
 import com.vob.weathermap.repository.Repository
 import com.vob.weathermap.util.Constants.Companion.API_ID
 import com.vob.weathermap.viewmodel.HomeViewModel
 import com.vob.weathermap.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 
-
+@InternalCoroutinesApi
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
@@ -35,6 +32,7 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +69,7 @@ class HomeFragment : Fragment() {
 
             if (WeatherApplication.hasNetwork())
             {
-                viewModel.getWeatherData("20.3", "20.5", API_ID)
+                viewModel.getWeatherData(latitude, longitude, API_ID)
                 viewModel.response.observe(viewLifecycleOwner, Observer {
 
                     binding.cordinates.text = "Lat: $latitude Lon: $longitude"
@@ -83,6 +81,22 @@ class HomeFragment : Fragment() {
                     binding.weatherDesc.text = it.weather[0].description
                     binding.visibility.text = "Visibility: ${it.visibility}"
                     binding.wind.text = "Wind: ${it.wind.speed}"
+
+                    val currentTime = System.currentTimeMillis()
+                    val data = WeatherDbModel(
+                        0,
+                        currentTime,
+                        it.main.temp,
+                        it.wind.speed,
+                        it.main.pressure,
+                        latitude,
+                        longitude,
+                        it.visibility,
+                        it.main.humidity
+                    )
+
+                    viewModel.addWeatherData(data)
+                    Toast.makeText(context, "Added data to room", Toast.LENGTH_LONG).show()
                 })
             }
 

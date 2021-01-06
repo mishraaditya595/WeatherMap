@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 data class WeatherDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val time: String,
-    val temp: String,
-    val wind: String,
-    val pressure: String,
+    val time: Long,
+    val temp: Double,
+    val wind: Double,
+    val pressure: Int,
     val lat: String,
     val lon: String,
-    val visibility: String,
-    val humidity: String
+    val visibility: Int,
+    val humidity: Int
 )
