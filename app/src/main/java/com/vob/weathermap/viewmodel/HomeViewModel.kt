@@ -21,7 +21,7 @@ class HomeViewModel(context: Context, private val repository: Repository): ViewM
     private val locationData = LocationLiveData(context)
     val response = MutableLiveData<WeatherModel>()
 
-    private val readOfflineData: LiveData<List<WeatherDbModel>>
+    val readOfflineData: LiveData<List<WeatherDbModel>>
     private val weatherDB_repo: WeatherRepository
 
     init {

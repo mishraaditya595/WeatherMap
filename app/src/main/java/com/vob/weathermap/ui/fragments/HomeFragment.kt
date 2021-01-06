@@ -65,11 +65,12 @@ class HomeFragment : Fragment() {
 
             delay(5000L)
 
-
-
             if (WeatherApplication.hasNetwork())
             {
-                viewModel.getWeatherData(latitude, longitude, API_ID)
+                if (latitude != null && longitude != null )
+                {
+                    viewModel.getWeatherData(latitude, longitude, API_ID)
+                }
                 viewModel.response.observe(viewLifecycleOwner, Observer {
 
                     binding.cordinates.text = "Lat: $latitude Lon: $longitude"
@@ -99,13 +100,21 @@ class HomeFragment : Fragment() {
                     Toast.makeText(context, "Added data to room", Toast.LENGTH_LONG).show()
                 })
             }
-
             else
             {
-                withContext(Dispatchers.Main)
-                {
-                    Toast.makeText(context,"", Toast.LENGTH_LONG).show()
-                }
+                Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
+                viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
+
+                    binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                    binding.humidity.text = "Humidity: ${it[0].humidity}"
+                    //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                    binding.pressure.text = "Pressure: ${it[0].pressure}"
+                    binding.temperature.text = "Temperature: ${it[0].temp}"
+                    //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                    //binding.weatherDesc.text = it.weather[0].description
+                    binding.visibility.text = "Visibility: ${it[0].visibility}"
+                    binding.wind.text = "Wind: ${it[0].wind}"
+                })
             }
 
         }
