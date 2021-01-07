@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [WeatherDbModel::class], version = 1, exportSchema = false)
+@Database(entities = [WeatherDbModel::class], version = 2, exportSchema = false)
 abstract class WeatherDB: RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDAO
@@ -15,6 +17,11 @@ abstract class WeatherDB: RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: WeatherDB? = null
+
+        var migration = object : Migration(1, 2){
+            override fun migrate(database: SupportSQLiteDatabase) {
+            }
+        }
 
         @InternalCoroutinesApi
         fun getDatabase(context: Context): WeatherDB{
@@ -27,7 +34,8 @@ abstract class WeatherDB: RoomDatabase() {
                     context.applicationContext,
                     WeatherDB::class.java,
                     "weather_data"
-                ).build()
+                ).addMigrations(migration).build()
+
                 INSTANCE = instance
                 return instance
             }

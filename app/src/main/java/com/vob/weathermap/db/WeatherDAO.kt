@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface WeatherDAO {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addWeatherData(data: WeatherDbModel)
 
     @Query("SELECT * FROM weather_data ORDER BY id ASC")

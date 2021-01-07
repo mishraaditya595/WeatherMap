@@ -85,7 +85,7 @@ class HomeFragment : Fragment() {
 
                     val currentTime = System.currentTimeMillis()
                     val data = WeatherDbModel(
-                        0,
+                        10,
                         currentTime,
                         it.main.temp,
                         it.wind.speed,
