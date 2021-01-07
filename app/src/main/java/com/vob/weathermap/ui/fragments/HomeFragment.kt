@@ -58,73 +58,21 @@ class HomeFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
 
-            viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
-                latitude =  it.latitude.toString()
-                longitude = it.longitude.toString()
+            val systemTime = System.currentTimeMillis()
+            var lat_db: String
+            var lon_db: String
+            var time_db: Long = systemTime
+            viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
+                lat_db = it[0].lat
+                lon_db = it[0].lat
+                time_db = it[0].time
             })
 
-            delay(2000L)
+            delay(1000L)
 
-            var flag = 0
-
-            if (WeatherApplication.hasNetwork())
+            if ((systemTime - time_db) < 60000L)
             {
-                if (latitude.isBlank() && longitude.isBlank() )
-                {
-                    viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                        if (it.isEmpty())
-                            Toast.makeText(context,"Error retrieving your location", Toast.LENGTH_LONG).show()
-                        else
-                        {
-                            latitude = it[0].lat
-                            longitude = it[0].lon
-
-                            flag = 999
-
-                            Toast.makeText(context,"Cord from db", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-                }
-
-                if (flag == 999)
-                {
-                    delay(1000L)
-                }
-
-                viewModel.getWeatherData(latitude, longitude, API_ID)
-
-                viewModel.response.observe(viewLifecycleOwner, Observer {
-
-                    binding.cordinates.text = "Lat: $latitude Lon: $longitude"
-                    binding.humidity.text = "Humidity: ${it.main.humidity}"
-                    binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                    binding.pressure.text = "Pressure: ${it.main.pressure}"
-                    binding.temperature.text = "Temperature: ${it.main.temp}"
-                    binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                    binding.weatherDesc.text = it.weather[0].description
-                    binding.visibility.text = "Visibility: ${it.visibility}"
-                    binding.wind.text = "Wind: ${it.wind.speed}"
-
-                    val currentTime = System.currentTimeMillis()
-                    val data = WeatherDbModel(
-                        10,
-                        currentTime,
-                        it.main.temp,
-                        it.wind.speed,
-                        it.main.pressure,
-                        latitude,
-                        longitude,
-                        it.visibility,
-                        it.main.humidity
-                    )
-
-                    viewModel.addWeatherData(data)
-                    Toast.makeText(context, "Added data to room", Toast.LENGTH_LONG).show()
-                })
-            }
-            else
-            {
-                Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Reloading from db", Toast.LENGTH_LONG).show()
                 viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
                     binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
                     binding.humidity.text = "Humidity: ${it[0].humidity}"
@@ -137,7 +85,89 @@ class HomeFragment : Fragment() {
                     binding.wind.text = "Wind: ${it[0].wind}"
                 })
             }
+            else
+            {
+                viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
+                    latitude =  it.latitude.toString()
+                    longitude = it.longitude.toString()
+                })
 
+                delay(2000L)
+
+                var flag = 0
+
+                if (WeatherApplication.hasNetwork())
+                {
+                    if (latitude.isBlank() && longitude.isBlank() )
+                    {
+                        viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
+                            if (it.isEmpty())
+                                Toast.makeText(context,"Error retrieving your location", Toast.LENGTH_LONG).show()
+                            else
+                            {
+                                latitude = it[0].lat
+                                longitude = it[0].lon
+
+                                flag = 999
+
+                                Toast.makeText(context,"Cord from db", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    }
+
+                    if (flag == 999)
+                    {
+                        delay(2000L)
+                    }
+
+                    viewModel.getWeatherData(latitude, longitude, API_ID)
+
+                    viewModel.response.observe(viewLifecycleOwner, Observer {
+
+                        binding.cordinates.text = "Lat: $latitude Lon: $longitude"
+                        binding.humidity.text = "Humidity: ${it.main.humidity}"
+                        binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                        binding.pressure.text = "Pressure: ${it.main.pressure}"
+                        binding.temperature.text = "Temperature: ${it.main.temp}"
+                        binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                        binding.weatherDesc.text = it.weather[0].description
+                        binding.visibility.text = "Visibility: ${it.visibility}"
+                        binding.wind.text = "Wind: ${it.wind.speed}"
+
+                        val currentTime = System.currentTimeMillis()
+                        val data = WeatherDbModel(
+                                10,
+                                currentTime,
+                                it.main.temp,
+                                it.wind.speed,
+                                it.main.pressure,
+                                latitude,
+                                longitude,
+                                it.visibility,
+                                it.main.humidity
+                        )
+
+                        viewModel.addWeatherData(data)
+                        Toast.makeText(context, "Added data to room", Toast.LENGTH_LONG).show()
+                    })
+                }
+                else
+                {
+                    Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
+                    viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
+                        binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                        binding.humidity.text = "Humidity: ${it[0].humidity}"
+                        //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                        binding.pressure.text = "Pressure: ${it[0].pressure}"
+                        binding.temperature.text = "Temperature: ${it[0].temp}"
+                        //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                        //binding.weatherDesc.text = it.weather[0].description
+                        binding.visibility.text = "Visibility: ${it[0].visibility}"
+                        binding.wind.text = "Wind: ${it[0].wind}"
+                    })
+                }
+
+            }
         }
 
     }
