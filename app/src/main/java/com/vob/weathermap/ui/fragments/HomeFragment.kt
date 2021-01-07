@@ -63,14 +63,36 @@ class HomeFragment : Fragment() {
                 longitude = it.longitude.toString()
             })
 
-            delay(5000L)
+            delay(2000L)
+
+            var flag = 0
 
             if (WeatherApplication.hasNetwork())
             {
-                if (latitude != null && longitude != null )
+                if (latitude.isBlank() && longitude.isBlank() )
                 {
-                    viewModel.getWeatherData(latitude, longitude, API_ID)
+                    viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
+                        if (it.isEmpty())
+                            Toast.makeText(context,"Error retrieving your location", Toast.LENGTH_LONG).show()
+                        else
+                        {
+                            latitude = it[0].lat
+                            longitude = it[0].lon
+
+                            flag = 999
+
+                            Toast.makeText(context,"Cord from db", Toast.LENGTH_SHORT).show()
+                        }
+                    })
                 }
+
+                if (flag == 999)
+                {
+                    delay(1000L)
+                }
+
+                viewModel.getWeatherData(latitude, longitude, API_ID)
+
                 viewModel.response.observe(viewLifecycleOwner, Observer {
 
                     binding.cordinates.text = "Lat: $latitude Lon: $longitude"
@@ -104,7 +126,6 @@ class HomeFragment : Fragment() {
             {
                 Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
                 viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-
                     binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
                     binding.humidity.text = "Humidity: ${it[0].humidity}"
                     //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
