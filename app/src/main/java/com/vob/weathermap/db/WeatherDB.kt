@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [WeatherDbModel::class], version = 5, exportSchema = false)
+@Database(entities = [WeatherDbModel::class], version = 6, exportSchema = false)
 abstract class WeatherDB: RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDAO

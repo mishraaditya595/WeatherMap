@@ -49,9 +49,9 @@ class HomeFragment : Fragment() {
         GlobalScope.launch(Dispatchers.Main) {
 
             val systemTime = System.currentTimeMillis()
-            var lat_db: String?
-            var lon_db: String?
-            var time_db: Long = systemTime
+            var lat_db: String? = ""
+            var lon_db: String? = ""
+            var time_db: Long = 0L
             viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
                 if (!it.isEmpty())
                 {
@@ -63,22 +63,27 @@ class HomeFragment : Fragment() {
 
             delay(1000L)
 
-            if ((systemTime - 0) < 60000L)
+            if ((systemTime - time_db) < 60000L)
             {
-                Toast.makeText(context, "Reloading from db", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Reloading from db", Toast.LENGTH_SHORT).show()
                 viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
                     if (!it.isEmpty())
                     {
-                        binding.locationTV.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                        binding.locationTV.text = it[0].cityName
                         binding.humidityNumTv.text = "${it[0].humidity} %"
-                        //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
                         binding.pressureNumTv.text = "${it[0].pressure} hPa"
                         binding.tempTV.text = "${it[0].temp} C"
-                        //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                        //binding.weatherDesc.text = it.weather[0].description
                         binding.visibilityNumTv.text = "${it[0].visibility} "
                         binding.windSpeedNumTv.text = "${it[0].wind} kmph"
                         binding.feelsLikeTv.text = "Feels like ${it[0].feelsLike} C"
+                        binding.aqiNumTv.text = it[0].aqi
+                        binding.coNumTv.text = it[0].co
+                        binding.no2NumTv.text = it[0].no2
+                        binding.coarseParticlesNumTv.text = it[0].pm10
+                        binding.fineParticlesNumTv.text = it[0].pm2_5
+
+                        if (it[0].aqi.isEmpty())
+                            Toast.makeText(context, "empty", Toast.LENGTH_SHORT).show()
                     }
 
                 })
@@ -120,6 +125,25 @@ class HomeFragment : Fragment() {
 
                     viewModel.getWeatherData(latitude, longitude, API_ID)
 
+                    viewModel.getAqiData(latitude, longitude, API_ID)
+
+                    var aqi: String = ""; var co: String = ""; var no2: String = ""; var pm10: String = ""; var pm2_5: String = ""
+
+                    viewModel.aqiResponse.observe(viewLifecycleOwner, Observer {
+
+                        aqi = it.list[0].main.aqi.toString()
+                        co = it.list[0].components.co.toString()
+                        no2 = it.list[0].components.no2.toString()
+                        pm10 = it.list[0].components.pm10.toString()
+                        pm2_5 = it.list[0].components.pm2_5.toString()
+
+                        binding.aqiNumTv.text = aqi
+                        binding.coNumTv.text = co
+                        binding.no2NumTv.text = no2
+                        binding.coarseParticlesNumTv.text = it.list[0].components.pm10.toString()
+                        binding.fineParticlesNumTv.text = it.list[0].components.pm2_5.toString()
+                    })
+
                     viewModel.weatherResponse.observe(viewLifecycleOwner, Observer {
 
                         binding.locationTV.text = it.name
@@ -132,6 +156,9 @@ class HomeFragment : Fragment() {
                         binding.visibilityNumTv.text = "${it.visibility}"
                         binding.windSpeedNumTv.text = "${it.wind.speed} kmph"
                         binding.feelsLikeTv.text = "Feels like ${it.main.feels_like} C"
+
+                        if (aqi.isEmpty())
+                            Toast.makeText(context,"Null", Toast.LENGTH_SHORT).show()
 
                         val currentTime = System.currentTimeMillis()
                         val data = WeatherDbModel(
@@ -148,7 +175,12 @@ class HomeFragment : Fragment() {
                                 it.clouds.all,
                                 0.0,
                                 0.0,
-                                it.main.feels_like
+                                it.main.feels_like,
+                                aqi,
+                                co,
+                                no2,
+                                pm10,
+                                pm2_5
                         )
 
                         viewModel.addWeatherData(data)
@@ -159,51 +191,23 @@ class HomeFragment : Fragment() {
                 {
                     Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
                     viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                        binding.locationTV.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                        binding.locationTV.text = it[0].cityName
                         binding.humidityNumTv.text = "${it[0].humidity} %"
-                        //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
                         binding.pressureNumTv.text = "${it[0].pressure} hPa"
                         binding.tempTV.text = "${it[0].temp} C"
-                        //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                        //binding.weatherDesc.text = it.weather[0].description
                         binding.visibilityNumTv.text = "${it[0].visibility} "
                         binding.windSpeedNumTv.text = "${it[0].wind} kmph"
                         binding.feelsLikeTv.text = "Feels like ${it[0].feelsLike} C"
+                        binding.aqiNumTv.text = it[0].aqi
+                        binding.coNumTv.text = it[0].co
+                        binding.no2NumTv.text = it[0].no2
+                        binding.coarseParticlesNumTv.text = it[0].pm10
+                        binding.fineParticlesNumTv.text = it[0].pm2_5
                     })
                 }
 
             }
 
-//            if ((systemTime - 0) < 3600000L)
-//            {
-//
-//            }
-
-
-
-
-            /*
-            Start retrieval of AQI data
-             */
-
-            viewModel.getAqiData(latitude, longitude, API_ID)
-
-            viewModel.aqiResponse.observe(viewLifecycleOwner, Observer {
-                binding.aqiNumTv.text = it.list[0].main.aqi.toString()
-                binding.co2NumTv.text = it.list[0].components.co.toString()
-                binding.no2NumTv.text = it.list[0].components.no2.toString()
-                binding.coarseParticlesNumTv.text = it.list[0].components.pm10.toString()
-                binding.fineParticlesNumTv.text = it.list[0].components.pm2_5.toString()
-            })
-
-
-
-
         }
-
-
-
     }
-
-
 }

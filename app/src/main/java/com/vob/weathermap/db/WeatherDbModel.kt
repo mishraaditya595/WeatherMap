@@ -20,5 +20,10 @@ data class WeatherDbModel(
     val clouds: Int,
     val dewPoints: Double,
     val uvi: Double,
-    val feelsLike: Double
+    val feelsLike: Double,
+    val aqi: String,
+    val co: String,
+    val no2: String,
+    val pm10: String,
+    val pm2_5: String
 )

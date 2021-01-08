@@ -375,7 +375,7 @@
 
 
                 <TextView
-                    android:id="@+id/co2_num_tv"
+                    android:id="@+id/co_num_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/aqi_tv"
@@ -387,12 +387,12 @@
                     />
 
                 <TextView
-                    android:id="@+id/co2_tv"
+                    android:id="@+id/co_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/co2_num_tv"
+                    android:layout_below="@+id/co_num_tv"
                     android:layout_marginTop="5dp"
-                    android:text="Carbon Dioxide"
+                    android:text="Carbon Monoxide"
                     android:textColor="@color/text_subhead"
                     android:textSize="20sp"
                     />
@@ -402,7 +402,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/aqi_tv"
-                    android:layout_toRightOf="@+id/co2_num_tv"
+                    android:layout_toRightOf="@+id/co_num_tv"
                     android:layout_marginTop="20dp"
                     android:text="0.5"
                     android:textColor="@color/white"
@@ -416,7 +416,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/fine_particles_num_tv"
-                    android:layout_toRightOf="@id/co2_tv"
+                    android:layout_toRightOf="@id/co_tv"
                     android:layout_marginTop="5dp"
                     android:text="Fine Particles"
                     android:textColor="@color/text_subhead"
@@ -428,7 +428,7 @@
                     android:id="@+id/no2_num_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/co2_tv"
+                    android:layout_below="@+id/co_tv"
                     android:layout_marginTop="20dp"
                     android:text="0.66"
                     android:textColor="@color/white"
@@ -452,7 +452,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/fine_particles_tv"
-                    android:layout_toRightOf="@+id/co2_num_tv"
+                    android:layout_toRightOf="@+id/co_num_tv"
                     android:layout_marginTop="20dp"
                     android:text="0.5"
                     android:textColor="@color/white"
@@ -466,7 +466,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/coarse_particles_num_tv"
-                    android:layout_toRightOf="@id/co2_tv"
+                    android:layout_toRightOf="@id/co_tv"
                     android:layout_marginTop="5dp"
                     android:text="Coarse Particles"
                     android:textColor="@color/text_subhead"
