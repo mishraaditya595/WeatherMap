@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.vob.weathermap.db.WeatherDB
 import com.vob.weathermap.db.WeatherDbModel
 import com.vob.weathermap.db.WeatherRepository
+import com.vob.weathermap.model.AqiModel
 import com.vob.weathermap.model.LocationLiveData
 import com.vob.weathermap.model.WeatherModel
 import com.vob.weathermap.repository.Repository
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel(context: Context, private val repository: Repository): ViewModel() {
 
     private val locationData = LocationLiveData(context)
-    val response = MutableLiveData<WeatherModel>()
+    val weatherResponse = MutableLiveData<WeatherModel>()
+    val aqiResponse = MutableLiveData<AqiModel>()
 
     val readOfflineData: LiveData<List<WeatherDbModel>>
     private val weatherDB_repo: WeatherRepository
@@ -35,7 +37,14 @@ class HomeViewModel(context: Context, private val repository: Repository): ViewM
     fun getWeatherData(lat: String, lon: String, appid: String) {
         viewModelScope.launch {
             val getResponse = repository.getWeatherData(lat, lon, appid)
-            response.value = getResponse
+            weatherResponse.value = getResponse
+        }
+    }
+
+    fun getAqiData(lat: String, lon: String, appid: String) {
+        viewModelScope.launch {
+            val getResponse = repository.getAirQualityData(lat, lon, appid)
+            aqiResponse.value = getResponse
         }
     }
 

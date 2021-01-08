@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.dynamic.IFragmentWrapper
 import com.vob.weathermap.R
 import com.vob.weathermap.WeatherApplication
 import com.vob.weathermap.databinding.FragmentHomeBinding
@@ -46,16 +45,6 @@ class HomeFragment : Fragment() {
         latitude = ""
         longitude = ""
 
-//        viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
-//            binding.cordinates.text = "Lat:${it.latitude}  Lon:${it.longitude}"
-//            latitude = it.latitude.toString()
-//            longitude = it.longitude.toString()
-//        })
-//
-//        viewModel.getWeatherData("28.70", "77.1", API_ID)
-//        viewModel.response.observe(viewLifecycleOwner, Observer {
-//            binding.temperature.text = "Temp: ${it.main.temp}"
-//        })
 
         GlobalScope.launch(Dispatchers.Main) {
 
@@ -131,7 +120,7 @@ class HomeFragment : Fragment() {
 
                     viewModel.getWeatherData(latitude, longitude, API_ID)
 
-                    viewModel.response.observe(viewLifecycleOwner, Observer {
+                    viewModel.weatherResponse.observe(viewLifecycleOwner, Observer {
 
                         binding.locationTV.text = it.name
                         binding.humidityNumTv.text = "${it.main.humidity} %"
@@ -184,33 +173,37 @@ class HomeFragment : Fragment() {
                 }
 
             }
+
+//            if ((systemTime - 0) < 3600000L)
+//            {
+//
+//            }
+
+
+
+
+            /*
+            Start retrieval of AQI data
+             */
+
+            viewModel.getAqiData(latitude, longitude, API_ID)
+
+            viewModel.aqiResponse.observe(viewLifecycleOwner, Observer {
+                binding.aqiNumTv.text = it.list[0].main.aqi.toString()
+                binding.co2NumTv.text = it.list[0].components.co.toString()
+                binding.no2NumTv.text = it.list[0].components.no2.toString()
+                binding.coarseParticlesNumTv.text = it.list[0].components.pm10.toString()
+                binding.fineParticlesNumTv.text = it.list[0].components.pm2_5.toString()
+            })
+
+
+
+
         }
 
-    }
 
-//    suspend fun startLocationUpdates() {
-//        viewModel.getLocationData().observe(viewLifecycleOwner, Observer {
-//            binding.latitude.text = it.latitude
-//            binding.longitude.text = it.longitude
-//
-//            val dateFormat = SimpleDateFormat("hh:mm a")
-//            dateFormat.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
-//            val timeCal = Calendar.getInstance().time
-//            val time = dateFormat.format(timeCal)
-//
-//            binding.time.text = getTime(it.time!!)
-//        })
-//    }
-
-    private fun getTime(timeStamp: String): String? {
-        val calendar = Calendar.getInstance()
-        val timeZone = calendar.timeZone
-
-        val sdf = SimpleDateFormat("dd/mm/yyyy hh:mm:ss")
-        sdf.timeZone = timeZone
-        val timeLong = timeStamp.toLong()
-        return sdf.format(timeLong*1000L)
 
     }
+
 
 }

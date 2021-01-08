@@ -39,17 +39,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getWeatherData(): String {
-        val okHttpClient = OkHttpClient()
-        val request = Request.Builder()
-                .url("${Constants.WEATHER_URL}lat=$latitude&lon=$longitude&appid=${Constants.API_ID}")
-                .get()
-                .build()
-
-        val response = okHttpClient.newCall(request).execute()
-        val data = response.body().string()
-        return data
-    }
+//    private fun getWeatherData(): String {
+//        val okHttpClient = OkHttpClient()
+//        val request = Request.Builder()
+//                .url("${Constants.WEATHER_URL}lat=$latitude&lon=$longitude&appid=${Constants.API_ID}")
+//                .get()
+//                .build()
+//
+//        val response = okHttpClient.newCall(request).execute()
+//        val data = response.body().string()
+//        return data
+//    }
 
     @SuppressLint("MissingPermission")
     fun getLocation() {
