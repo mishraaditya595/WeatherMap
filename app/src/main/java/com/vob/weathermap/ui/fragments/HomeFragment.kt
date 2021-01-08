@@ -89,6 +89,7 @@ class HomeFragment : Fragment() {
                         //binding.weatherDesc.text = it.weather[0].description
                         binding.visibilityNumTv.text = "${it[0].visibility} "
                         binding.windSpeedNumTv.text = "${it[0].wind} kmph"
+                        binding.feelsLikeTv.text = "Feels like ${it[0].feelsLike} C"
                     }
 
                 })
@@ -178,6 +179,7 @@ class HomeFragment : Fragment() {
                         //binding.weatherDesc.text = it.weather[0].description
                         binding.visibilityNumTv.text = "${it[0].visibility} "
                         binding.windSpeedNumTv.text = "${it[0].wind} kmph"
+                        binding.feelsLikeTv.text = "Feels like ${it[0].feelsLike} C"
                     })
                 }
 
