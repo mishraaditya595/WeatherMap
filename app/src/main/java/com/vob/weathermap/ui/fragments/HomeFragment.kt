@@ -81,6 +81,7 @@ class HomeFragment : Fragment() {
                         binding.no2NumTv.text = it[0].no2
                         binding.coarseParticlesNumTv.text = it[0].pm10
                         binding.fineParticlesNumTv.text = it[0].pm2_5
+                        binding.weatherDescTv.text = it[0].weatherDescription
 
                         if (it[0].aqi.isEmpty())
                             Toast.makeText(context, "empty", Toast.LENGTH_SHORT).show()
@@ -144,6 +145,8 @@ class HomeFragment : Fragment() {
                         binding.fineParticlesNumTv.text = it.list[0].components.pm2_5.toString()
                     })
 
+                    delay(1000L)
+
                     viewModel.weatherResponse.observe(viewLifecycleOwner, Observer {
 
                         binding.locationTV.text = it.name
@@ -161,9 +164,14 @@ class HomeFragment : Fragment() {
                             Toast.makeText(context,"Null", Toast.LENGTH_SHORT).show()
 
                         val currentTime = System.currentTimeMillis()
+
+                        if (it.weather[0].description.isEmpty())
+                            Toast.makeText(context, "desc empty", Toast.LENGTH_SHORT).show()
+
                         val data = WeatherDbModel(
                                 10,
                                 it.name,
+                                it.weather[0].description,
                                 currentTime,
                                 it.main.temp,
                                 it.wind.speed,
@@ -176,7 +184,7 @@ class HomeFragment : Fragment() {
                                 0.0,
                                 0.0,
                                 it.main.feels_like,
-                                aqi,
+                                binding.aqiNumTv.text as String,
                                 co,
                                 no2,
                                 pm10,

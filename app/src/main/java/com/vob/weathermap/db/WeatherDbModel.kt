@@ -9,6 +9,7 @@ data class WeatherDbModel(
     @PrimaryKey(autoGenerate = false)
     val id: Int,
     val cityName: String,
+    val weatherDescription: String,
     val time: Long,
     val temp: Double,
     val wind: Double,
