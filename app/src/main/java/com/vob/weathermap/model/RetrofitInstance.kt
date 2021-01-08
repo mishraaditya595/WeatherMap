@@ -70,30 +70,9 @@ class RetrofitInstance {
 
     private val retrofit by lazy {
 
-//        val okHttpClient = OkHttpClient.Builder()
-//                .cache(cache())
-//                .addInterceptor(httpLoggingInterceptor()) //used when network is on & off
-//                .addNetworkInterceptor(networkInterceptor()) //used when network is on
-//                .addInterceptor(offlineInterceptor())
-//                .build()
-
-        val okHttpClient = OkHttpClient.Builder()
-                .cache(cache())
-                .addInterceptor { chain->
-                    val request = chain.request()
-
-                    if (WeatherApplication.hasNetwork())
-                        request.newBuilder().header(HEADER_CACHE_CONTROL, "public, max-age=" +60).build()
-                    else
-                        request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build()
-
-                    chain.proceed(request)
-                }
-                .build()
-
         Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(okHttpClient)
+                //.client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }

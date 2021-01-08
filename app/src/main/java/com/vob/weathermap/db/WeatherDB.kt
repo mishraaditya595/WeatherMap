@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [WeatherDbModel::class], version = 2, exportSchema = false)
+@Database(entities = [WeatherDbModel::class], version = 5, exportSchema = false)
 abstract class WeatherDB: RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDAO
@@ -18,9 +18,18 @@ abstract class WeatherDB: RoomDatabase() {
         @Volatile
         private var INSTANCE: WeatherDB? = null
 
-        var migration = object : Migration(1, 2){
+        var migration1_2 = object : Migration(1, 2){
             override fun migrate(database: SupportSQLiteDatabase) {
             }
+        }
+
+        val migration2_3 = object : Migration(2, 3){
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE 'weather_data' ADD COLUMN 'clouds' INTEGER NOT NULL DEFAULT 0; " +
+                        "ALTER TABLE 'weather_data' ADD COLUMN 'dewPoints' FLOAT NOT NULL DEFAULT 0.0;" +
+                "ALTER TABLE 'weather_data' ADD COLUMN 'uvi' FLOAT NOT NULL DEFAULT 0.0;")
+            }
+
         }
 
         @InternalCoroutinesApi
@@ -33,8 +42,9 @@ abstract class WeatherDB: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     WeatherDB::class.java,
-                    "weather_data"
-                ).addMigrations(migration).build()
+                    "weather_data")
+                        .fallbackToDestructiveMigration()
+                        .build()
 
                 INSTANCE = instance
                 return instance

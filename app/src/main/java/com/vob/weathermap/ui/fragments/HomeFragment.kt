@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.dynamic.IFragmentWrapper
 import com.vob.weathermap.R
 import com.vob.weathermap.WeatherApplication
 import com.vob.weathermap.databinding.FragmentHomeBinding
@@ -59,30 +60,37 @@ class HomeFragment : Fragment() {
         GlobalScope.launch(Dispatchers.Main) {
 
             val systemTime = System.currentTimeMillis()
-            var lat_db: String
-            var lon_db: String
+            var lat_db: String?
+            var lon_db: String?
             var time_db: Long = systemTime
             viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                lat_db = it[0].lat
-                lon_db = it[0].lat
-                time_db = it[0].time
+                if (!it.isEmpty())
+                {
+                    lat_db = it[0].lat
+                    lon_db = it[0].lat
+                    time_db = it[0].time
+                }
             })
 
             delay(1000L)
 
-            if ((systemTime - time_db) < 60000L)
+            if ((systemTime - 0) < 60000L)
             {
                 Toast.makeText(context, "Reloading from db", Toast.LENGTH_LONG).show()
                 viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                    //binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
-                    binding.humidityNumTv.text = "${it[0].humidity} %"
-                    //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                    binding.pressureNumTv.text = "${it[0].pressure} hPa"
-                    binding.tempTV.text = "${it[0].temp} C"
-                    //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                    //binding.weatherDesc.text = it.weather[0].description
-                    binding.visibilityNumTv.text = "${it[0].visibility} "
-                    binding.windSpeedNumTv.text = "${it[0].wind} kmph"
+                    if (!it.isEmpty())
+                    {
+                        binding.locationTV.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                        binding.humidityNumTv.text = "${it[0].humidity} %"
+                        //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                        binding.pressureNumTv.text = "${it[0].pressure} hPa"
+                        binding.tempTV.text = "${it[0].temp} C"
+                        //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                        //binding.weatherDesc.text = it.weather[0].description
+                        binding.visibilityNumTv.text = "${it[0].visibility} "
+                        binding.windSpeedNumTv.text = "${it[0].wind} kmph"
+                    }
+
                 })
             }
             else
@@ -133,10 +141,12 @@ class HomeFragment : Fragment() {
                         binding.weatherDescTv.text = it.weather[0].description
                         binding.visibilityNumTv.text = "${it.visibility}"
                         binding.windSpeedNumTv.text = "${it.wind.speed} kmph"
+                        binding.feelsLikeTv.text = "Feels like ${it.main.feels_like} C"
 
                         val currentTime = System.currentTimeMillis()
                         val data = WeatherDbModel(
                                 10,
+                                it.name,
                                 currentTime,
                                 it.main.temp,
                                 it.wind.speed,
@@ -144,7 +154,11 @@ class HomeFragment : Fragment() {
                                 latitude,
                                 longitude,
                                 it.visibility,
-                                it.main.humidity
+                                it.main.humidity,
+                                it.clouds.all,
+                                0.0,
+                                0.0,
+                                it.main.feels_like
                         )
 
                         viewModel.addWeatherData(data)
