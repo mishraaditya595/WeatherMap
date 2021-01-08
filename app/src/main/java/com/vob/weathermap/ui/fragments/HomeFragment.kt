@@ -74,15 +74,15 @@ class HomeFragment : Fragment() {
             {
                 Toast.makeText(context, "Reloading from db", Toast.LENGTH_LONG).show()
                 viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                    binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
-                    binding.humidity.text = "Humidity: ${it[0].humidity}"
+                    //binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                    binding.humidityNumTv.text = "${it[0].humidity} %"
                     //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                    binding.pressure.text = "Pressure: ${it[0].pressure}"
-                    binding.temperature.text = "Temperature: ${it[0].temp}"
+                    binding.pressureNumTv.text = "${it[0].pressure} hPa"
+                    binding.tempTV.text = "${it[0].temp} C"
                     //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
                     //binding.weatherDesc.text = it.weather[0].description
-                    binding.visibility.text = "Visibility: ${it[0].visibility}"
-                    binding.wind.text = "Wind: ${it[0].wind}"
+                    binding.visibilityNumTv.text = "${it[0].visibility} "
+                    binding.windSpeedNumTv.text = "${it[0].wind} kmph"
                 })
             }
             else
@@ -124,15 +124,15 @@ class HomeFragment : Fragment() {
 
                     viewModel.response.observe(viewLifecycleOwner, Observer {
 
-                        binding.cordinates.text = "Lat: $latitude Lon: $longitude"
-                        binding.humidity.text = "Humidity: ${it.main.humidity}"
-                        binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                        binding.pressure.text = "Pressure: ${it.main.pressure}"
-                        binding.temperature.text = "Temperature: ${it.main.temp}"
-                        binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
-                        binding.weatherDesc.text = it.weather[0].description
-                        binding.visibility.text = "Visibility: ${it.visibility}"
-                        binding.wind.text = "Wind: ${it.wind.speed}"
+                        binding.locationTV.text = it.name
+                        binding.humidityNumTv.text = "${it.main.humidity} %"
+                        //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
+                        binding.pressureNumTv.text = "${it.main.pressure} hPa"
+                        binding.tempTV.text = "${it.main.temp} C"
+                        //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
+                        binding.weatherDescTv.text = it.weather[0].description
+                        binding.visibilityNumTv.text = "${it.visibility}"
+                        binding.windSpeedNumTv.text = "${it.wind.speed} kmph"
 
                         val currentTime = System.currentTimeMillis()
                         val data = WeatherDbModel(
@@ -155,15 +155,15 @@ class HomeFragment : Fragment() {
                 {
                     Toast.makeText(context, "No internet", Toast.LENGTH_LONG).show()
                     viewModel.readOfflineData.observe(viewLifecycleOwner, Observer {
-                        binding.cordinates.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
-                        binding.humidity.text = "Humidity: ${it[0].humidity}"
+                        binding.locationTV.text = "Lat: ${it[0].lat} Lon: ${it[0].lon}"
+                        binding.humidityNumTv.text = "${it[0].humidity} %"
                         //binding.maxMinTemp.text = "Max Temp: ${it.main.temp_max}  Min Temp: ${it.main.temp_min}"
-                        binding.pressure.text = "Pressure: ${it[0].pressure}"
-                        binding.temperature.text = "Temperature: ${it[0].temp}"
+                        binding.pressureNumTv.text = "${it[0].pressure} hPa"
+                        binding.tempTV.text = "${it[0].temp} C"
                         //binding.sunRiseSet.text = "Sunrise: ${it.sys.sunrise}  Sunset: ${it.sys.sunset}"
                         //binding.weatherDesc.text = it.weather[0].description
-                        binding.visibility.text = "Visibility: ${it[0].visibility}"
-                        binding.wind.text = "Wind: ${it[0].wind}"
+                        binding.visibilityNumTv.text = "${it[0].visibility} "
+                        binding.windSpeedNumTv.text = "${it[0].wind} kmph"
                     })
                 }
 
